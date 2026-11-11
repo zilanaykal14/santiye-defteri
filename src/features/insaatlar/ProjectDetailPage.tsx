@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { ArrowLeft, NotebookPen, Pencil, Plus, Wallet } from 'lucide-react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { ArrowLeft, NotebookPen, Pencil, Plus, Trash2, Wallet } from 'lucide-react'
 import { useCan } from '@/store/useAuthStore'
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import {
@@ -23,7 +23,8 @@ import { Banknote, HardHat, PiggyBank, Target } from 'lucide-react'
 
 export function ProjectDetailPage() {
   const { id } = useParams()
-  const { projects, transactions, partners, properties, remove } = useAppStore()
+  const { projects, transactions, partners, properties, siteLogs, remove, deleteProject } = useAppStore()
+  const navigate = useNavigate()
   const openTx = useUIStore((s) => s.openTxDialog)
   const settlement = useSettlement()
   const [editOpen, setEditOpen] = React.useState(false)
@@ -93,6 +94,25 @@ export function ProjectDetailPage() {
             {can.edit && (
               <Button variant="outline" onClick={() => setEditOpen(true)}>
                 <Pencil /> Düzenle
+              </Button>
+            )}
+            {can.edit && (
+              <Button
+                variant="ghost"
+                className="text-negative"
+                onClick={() => {
+                  const txCount = transactions.filter((t) => t.projectId === project.id).length
+                  const logCount = siteLogs.filter((l) => l.projectId === project.id).length
+                  askConfirm(
+                    `"${project.name}" projesi silinsin mi? Ona ait ${txCount} işlem ve ${logCount} günlük notu da silinir. Bu işlem geri alınamaz.`,
+                    () => {
+                      deleteProject(project.id)
+                      navigate('/insaatlar', { replace: true })
+                    },
+                  )
+                }}
+              >
+                <Trash2 /> Projeyi sil
               </Button>
             )}
             {can.add && (

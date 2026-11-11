@@ -24,6 +24,8 @@ interface AppState extends DataSnapshot {
   addRentPayment: (p: Omit<RentPayment, 'id'>) => void
   addSiteLog: (l: Omit<SiteLog, 'id' | 'createdAt' | 'createdBy'>) => SiteLog
   addProject: (p: Omit<Project, 'id'>) => Project
+  /** Projeyi ve ona bağlı giderleri, sermayeyi, mahsupları ve günlük notlarını siler */
+  deleteProject: (id: ID) => void
   addPartner: (p: Omit<Partner, 'id'>) => Partner
   addProperty: (p: Omit<Property, 'id'>) => Property
   addUnit: (u: Omit<Unit, 'id'>) => Unit
@@ -62,6 +64,12 @@ export const useAppStore = create<AppState>()(
         set((s) => ({ siteLogs: [...s.siteLogs, log] }))
         return log
       },
+      deleteProject: (id) =>
+        set((s) => ({
+          projects: s.projects.filter((p) => p.id !== id),
+          transactions: s.transactions.filter((t) => t.projectId !== id),
+          siteLogs: s.siteLogs.filter((l) => l.projectId !== id),
+        })),
       addProject: (p) => {
         const project = { ...p, id: uid('pr-') }
         set((s) => ({ projects: [...s.projects, project] }))

@@ -230,3 +230,25 @@ describe('bulut senkronizasyonu', () => {
     stopSync()
   })
 })
+
+describe('proje silme', () => {
+  it('projeyi ve ona bağlı kayıtları siler, sunucuya silme gönderir', async () => {
+    const f = fakeClient({
+      rows: [
+        { collection: 'projects', id: 'pr1', data: { id: 'pr1', name: 'Deneme', shares: [], budget: {} } },
+        { collection: 'transactions', id: 'a', data: sampleTx('a') },
+        { collection: 'transactions', id: 'b', data: { ...sampleTx('b'), projectId: 'pr2' } },
+        { collection: 'siteLogs', id: 'l1', data: { id: 'l1', projectId: 'pr1', date: '2026-11-11', note: 'x', createdAt: '' } },
+      ],
+    })
+    await startSync(f.client)
+    useAppStore.getState().deleteProject('pr1')
+    await tick()
+    const s = useAppStore.getState()
+    expect(s.projects).toHaveLength(0)
+    expect(s.transactions.map((t) => t.id)).toEqual(['b']) // başka projenin gideri kalır
+    expect(s.siteLogs).toHaveLength(0)
+    expect(f.calls.sort()).toEqual(['delete projects/pr1', 'delete siteLogs/l1', 'delete transactions/a'])
+    stopSync()
+  })
+})
