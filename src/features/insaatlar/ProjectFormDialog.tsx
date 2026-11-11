@@ -39,6 +39,11 @@ export function ProjectFormDialog({
     Object.fromEntries(COST_CATEGORIES.map((c) => [c, project ? String(project.budget[c] / 100) : ''])) as Record<CostCategory, string>,
   )
   const [error, setError] = React.useState('')
+  // Satırlar değişince eski uyarıyı temizle
+  const updateShares = (next: ShareRow[]) => {
+    setShares(next)
+    setError('')
+  }
 
   const totalPct = shares.reduce((a, s) => a + (Number(s.pct.replace(',', '.')) || 0), 0)
 
@@ -107,7 +112,7 @@ export function ProjectFormDialog({
                 <div key={i} className="flex gap-2">
                   <Select
                     value={s.partnerId}
-                    onChange={(e) => setShares(shares.map((x, j) => (j === i ? { ...x, partnerId: e.target.value } : x)))}
+                    onChange={(e) => updateShares(shares.map((x, j) => (j === i ? { ...x, partnerId: e.target.value } : x)))}
                   >
                     <option value="">Ortak seçin…</option>
                     {partners.map((p) => (
@@ -120,19 +125,19 @@ export function ProjectFormDialog({
                     <Input
                       inputMode="decimal"
                       value={s.pct}
-                      onChange={(e) => setShares(shares.map((x, j) => (j === i ? { ...x, pct: e.target.value } : x)))}
+                      onChange={(e) => updateShares(shares.map((x, j) => (j === i ? { ...x, pct: e.target.value } : x)))}
                       className="num pr-7 text-right"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
                   </div>
-                  <Button variant="ghost" size="icon" onClick={() => setShares(shares.filter((_, j) => j !== i))} disabled={shares.length === 1} aria-label="Kaldır">
+                  <Button variant="ghost" size="icon" onClick={() => updateShares(shares.filter((_, j) => j !== i))} disabled={shares.length === 1} aria-label="Kaldır">
                     <Trash2 />
                   </Button>
                 </div>
               ))}
             </div>
             <div className="mt-3 flex items-center justify-between">
-              <Button variant="outline" size="sm" onClick={() => setShares([...shares, { partnerId: '', pct: '' }])}>
+              <Button variant="outline" size="sm" onClick={() => updateShares([...shares, { partnerId: '', pct: '' }])}>
                 <Plus /> Ortak ekle
               </Button>
               <span className={`num text-sm ${Math.abs(totalPct - 100) < 0.001 ? 'text-positive' : 'text-negative'}`}>Toplam %{totalPct}</span>

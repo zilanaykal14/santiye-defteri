@@ -176,6 +176,17 @@
   h1, h2, h3 {
     text-wrap: balance;
   }
+  /* iOS tarih kutusu ekrandan taşmasın */
+  input[type='date'] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-width: 0;
+    max-width: 100%;
+    text-align: left;
+  }
+  input[type='date']::-webkit-date-and-time-value {
+    text-align: left;
+  }
   .num {
     font-variant-numeric: tabular-nums;
     font-feature-settings: 'tnum';
