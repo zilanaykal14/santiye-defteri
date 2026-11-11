@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom'
 import { ShieldX } from 'lucide-react'
 import { Button } from '@/components/ui'
 import { useCan } from '@/store/useAuthStore'
-import { firstAllowedPath } from '@/lib/auth'
+import { firstAllowedPath, type AdminPage } from '@/lib/auth'
 import type { PageKey } from '@/types'
 
 /** Sayfa yetkisi yoksa erişimi engeller */
-export function Guard({ page, children }: { page: PageKey | 'kullanicilar'; children: React.ReactNode }) {
+export function Guard({ page, children }: { page: PageKey | AdminPage; children: React.ReactNode }) {
   const can = useCan()
   if (can.see(page)) return <>{children}</>
   return (

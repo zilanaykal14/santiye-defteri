@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { useAppStore, setStoreUser } from './useAppStore'
-import { canAdd, canEdit, canSee, normalizeUsername, verifyPassword } from '@/lib/auth'
+import { canAdd, canEdit, canSee, canSeeRentals, normalizeUsername, verifyPassword, type AdminPage } from '@/lib/auth'
 import { CLOUD } from '@/lib/backend'
 import type { ID, PageKey } from '@/types'
 
@@ -143,7 +143,8 @@ export function useCan() {
     isAdmin: user?.role === 'yonetici',
     add: canAdd(user),
     edit: canEdit(user),
-    see: (p: PageKey | 'kullanicilar') => canSee(user, p),
+    see: (p: PageKey | AdminPage) => canSee(user, p),
+    rentals: canSeeRentals(user),
   }
 }
 

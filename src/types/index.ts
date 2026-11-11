@@ -283,3 +283,16 @@ export interface SiteLog {
   createdBy?: ID
   createdAt: string
 }
+
+// ─────────────────────────────── HATIRLATICILAR (yalnız yönetici) ───────────────────────────────
+
+export interface Reminder {
+  id: ID
+  /** Serbest metin: "Belediyeye iskele izni için uğra" */
+  text: string
+  /** İsteğe bağlı tarih; geldiğinde bildirim zilinde görünür */
+  dueDate?: ISODate
+  done: boolean
+  createdAt: string
+  doneAt?: string
+}

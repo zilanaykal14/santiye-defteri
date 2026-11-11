@@ -27,7 +27,7 @@ export function SettingsPage() {
     const snap: DataSnapshot = {
       partners: s.partners, projects: s.projects, properties: s.properties, units: s.units,
       tenants: s.tenants, leases: s.leases, rentPayments: s.rentPayments, transactions: s.transactions,
-      users: s.users, siteLogs: s.siteLogs,
+      users: s.users, siteLogs: s.siteLogs, reminders: s.reminders,
     }
     const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' })
     const a = document.createElement('a')

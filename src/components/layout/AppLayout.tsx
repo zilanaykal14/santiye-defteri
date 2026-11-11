@@ -2,10 +2,11 @@ import * as React from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   Building2, HardHat, Handshake, KeyRound, LayoutDashboard, ListOrdered, LogOut, Menu,
-  NotebookPen, Plus, Settings, ShieldCheck, Users, X,
+  AlarmClock, NotebookPen, Plus, Settings, ShieldCheck, Users, X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { NotificationBell } from '@/components/shared/NotificationBell'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { SyncBadge } from '@/components/shared/SyncBadge'
 import { InstallBanner } from '@/components/shared/InstallBanner'
@@ -17,8 +18,9 @@ import { useUIStore } from '@/store/useUIStore'
 import { useAuthStore, useCan } from '@/store/useAuthStore'
 import { cn } from '@/lib/utils'
 import type { PageKey } from '@/types'
+import type { AdminPage } from '@/lib/auth'
 
-const NAV: { to: string; label: string; icon: LucideIcon; page: PageKey | 'kullanicilar' }[] = [
+const NAV: { to: string; label: string; icon: LucideIcon; page: PageKey | AdminPage }[] = [
   { to: '/dashboard', label: 'Genel Bakış', icon: LayoutDashboard, page: 'dashboard' },
   { to: '/gunluk', label: 'Şantiye Günlüğü', icon: NotebookPen, page: 'gunluk' },
   { to: '/insaatlar', label: 'İnşaatlar', icon: HardHat, page: 'insaatlar' },
@@ -27,6 +29,7 @@ const NAV: { to: string; label: string; icon: LucideIcon; page: PageKey | 'kulla
   { to: '/mulkler-ve-kiralar', label: 'Mülkler & Kiralar', icon: Building2, page: 'mulkler' },
   { to: '/islemler', label: 'Tüm İşlemler', icon: ListOrdered, page: 'islemler' },
   { to: '/ayarlar', label: 'Ortaklar & Ayarlar', icon: Settings, page: 'ayarlar' },
+  { to: '/hatirlaticilar', label: 'Hatırlatıcılar', icon: AlarmClock, page: 'hatirlaticilar' },
   { to: '/kullanicilar', label: 'Kullanıcılar & Şifreler', icon: ShieldCheck, page: 'kullanicilar' },
 ]
 
@@ -128,7 +131,10 @@ export function AppLayout() {
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[256px_minmax(0,1fr)] lg:bg-[linear-gradient(to_right,var(--sidebar)_256px,transparent_256px)]">
       <aside className="sticky top-0 hidden h-dvh flex-col gap-5 overflow-y-auto bg-sidebar py-5 lg:flex print:hidden">
-        <Brand />
+        <div className="flex items-center justify-between pr-3">
+          <Brand />
+          <NotificationBell />
+        </div>
         {can.add && (
           <div className="px-3">
             <Button variant="brand" className="w-full" onClick={() => openTx()}>
@@ -146,9 +152,12 @@ export function AppLayout() {
 
       <header className="sticky top-0 z-40 flex items-center justify-between bg-sidebar px-4 pb-3 pt-[calc(env(safe-area-inset-top,0px)+12px)] lg:hidden print:hidden">
         <Brand />
-        <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-active" onClick={() => setMobileOpen(true)} aria-label="Menü">
-          <Menu />
-        </Button>
+        <div className="flex items-center gap-1">
+          <NotificationBell />
+          <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-active" onClick={() => setMobileOpen(true)} aria-label="Menü">
+            <Menu />
+          </Button>
+        </div>
       </header>
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">

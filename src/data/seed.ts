@@ -9,6 +9,7 @@ import type {
   AppUser,
   Partner,
   Project,
+  Reminder,
   SiteLog,
   Property,
   RentPayment,
@@ -30,6 +31,7 @@ export interface DataSnapshot {
   transactions: Transaction[]
   users: AppUser[]
   siteLogs: SiteLog[]
+  reminders: Reminder[]
 }
 
 export function buildSeed(now = new Date()): DataSnapshot {
@@ -244,7 +246,13 @@ export function buildSeed(now = new Date()): DataSnapshot {
   }))
   siteLogs.push({ id: 'log-v1', projectId: 'pr-villa', date: d(-7, 16), note: 'Villa inşaatı başladı, hafriyat yapıldı.', workers: 5, createdBy: 'u-admin', createdAt: `${d(-7, 16)}T18:00:00.000Z` })
 
-  return { partners, projects, properties, units, tenants, leases, rentPayments, transactions, users: SEED_USERS, siteLogs }
+  const reminders: Reminder[] = [
+    { id: 'rm-1', text: 'Belediyeye iskele izni için uğra', dueDate: today, done: false, createdAt: `${today}T08:00:00.000Z` },
+    { id: 'rm-2', text: 'A-2 kiracısıyla sözleşme yenilemeyi konuş', dueDate: d(0, 28), done: false, createdAt: `${today}T08:01:00.000Z` },
+    { id: 'rm-3', text: 'Hazır beton firmasından yeni fiyat iste', done: false, createdAt: `${today}T08:02:00.000Z` },
+  ]
+
+  return { partners, projects, properties, units, tenants, leases, rentPayments, transactions, users: SEED_USERS, siteLogs, reminders }
 }
 
 /**
@@ -282,4 +290,5 @@ export const EMPTY_SNAPSHOT: DataSnapshot = {
   transactions: [],
   users: [],
   siteLogs: [],
+  reminders: [],
 }

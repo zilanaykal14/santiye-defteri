@@ -30,12 +30,19 @@ export const PAGE_PATH: Record<PageKey, string> = {
   ayarlar: '/ayarlar',
 }
 
-export function canSee(user: AppUser | undefined, page: PageKey | 'kullanicilar'): boolean {
+/** Yalnızca yöneticinin girebildiği, yetki kutucuğu olmayan sayfalar */
+export type AdminPage = 'kullanicilar' | 'hatirlaticilar'
+const ADMIN_PAGES: readonly string[] = ['kullanicilar', 'hatirlaticilar']
+
+export function canSee(user: AppUser | undefined, page: PageKey | AdminPage): boolean {
   if (!user || !user.active) return false
   if (user.role === 'yonetici') return true
-  if (page === 'kullanicilar') return false
-  return user.pages.includes(page)
+  if (ADMIN_PAGES.includes(page)) return false
+  return user.pages.includes(page as PageKey)
 }
+
+/** Kira portföyünü görebilir mi (sunucudaki can_see_rentals ile aynı kural) */
+export const canSeeRentals = (u?: AppUser) => canSee(u, 'kiracilar') || canSee(u, 'mulkler')
 
 export const canAdd = (u?: AppUser) => !!u && (u.role === 'yonetici' || u.canAdd)
 export const canEdit = (u?: AppUser) => !!u && (u.role === 'yonetici' || u.canEdit)

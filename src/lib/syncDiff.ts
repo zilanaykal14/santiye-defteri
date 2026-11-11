@@ -16,6 +16,7 @@ export const SYNCED = [
   'rentPayments',
   'transactions',
   'siteLogs',
+  'reminders',
 ] as const
 export type SyncedCollection = (typeof SYNCED)[number]
 

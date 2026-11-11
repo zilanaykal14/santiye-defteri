@@ -103,13 +103,14 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: CLOUD ? 'santiye-bulut-onbellek' : 'insaat-portfoy-v1',
-      version: 2,
+      version: 3,
       migrate: (old, version) => {
         const st = (old ?? {}) as Partial<DataSnapshot>
         if (version < 2 && !CLOUD) {
           st.users = st.users?.length ? st.users : SEED_USERS
           st.siteLogs = st.siteLogs ?? []
         }
+        if (version < 3) st.reminders = st.reminders ?? []
         return st as DataSnapshot
       },
       storage: createJSONStorage(() => safeLocalStorage),
@@ -124,6 +125,7 @@ export const useAppStore = create<AppState>()(
         transactions: s.transactions,
         users: s.users,
         siteLogs: s.siteLogs,
+        reminders: s.reminders,
       }),
     },
   ),
