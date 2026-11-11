@@ -5,6 +5,7 @@ import { PageHeader, PartnerDot } from '@/components/shared'
 import { useAppStore } from '@/store/useAppStore'
 import { askConfirm } from '@/store/useUIStore'
 import { IS_PREVIEW } from '@/lib/utils'
+import { CLOUD } from '@/lib/backend'
 import type { DataSnapshot } from '@/data/seed'
 
 const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)']
@@ -106,22 +107,38 @@ export function SettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Veri yönetimi</CardTitle>
-            <CardDescription>Veriler bu tarayıcının yerel deposunda tutulur. Düzenli yedek almanız önerilir.</CardDescription>
+            <CardDescription>
+              {CLOUD
+                ? 'Veriler çevrimiçi veritabanında saklanır ve tüm cihazlarda aynıdır. Ayda bir yedek indirmeniz önerilir.'
+                : 'Veriler bu tarayıcının yerel deposunda tutulur. Düzenli yedek almanız önerilir.'}
+            </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3">
             <div className="flex flex-wrap gap-2">
               {!IS_PREVIEW && <Button variant="outline" onClick={exportJSON}><Download /> Yedek indir (JSON)</Button>}
-              <Button variant="outline" onClick={() => fileRef.current?.click()}><Upload /> Yedek yükle</Button>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  CLOUD
+                    ? askConfirm('Yedek yüklenirse herkesin gördüğü mevcut kayıtların yerine yedekteki kayıtlar geçer. Devam edilsin mi?', () => fileRef.current?.click())
+                    : fileRef.current?.click()
+                }
+              >
+                <Upload /> Yedek yükle
+              </Button>
               <input ref={fileRef} type="file" accept="application/json" className="hidden" onChange={(e) => e.target.files?.[0] && importJSON(e.target.files[0])} />
             </div>
-            <div className="flex flex-wrap gap-2 border-t pt-3">
-              <Button variant="outline" onClick={() => askConfirm('Tüm veriler demo verisiyle değiştirilsin mi?', () => { resetDemo() })}>
-                <RotateCcw /> Demo verisini yükle
-              </Button>
-              <Button variant="destructive" onClick={() => askConfirm('TÜM veriler silinsin mi? Bu işlem geri alınamaz.', () => { clearAll() })}>
-                <Trash2 /> Tümünü temizle
-              </Button>
-            </div>
+            {/* Demo yükleme ve toplu silme yalnızca yerel deneme modunda: gerçek veride çok tehlikeli */}
+            {!CLOUD && (
+              <div className="flex flex-wrap gap-2 border-t pt-3">
+                <Button variant="outline" onClick={() => askConfirm('Tüm veriler demo verisiyle değiştirilsin mi?', () => { resetDemo() })}>
+                  <RotateCcw /> Demo verisini yükle
+                </Button>
+                <Button variant="destructive" onClick={() => askConfirm('TÜM veriler silinsin mi? Bu işlem geri alınamaz.', () => { clearAll() })}>
+                  <Trash2 /> Tümünü temizle
+                </Button>
+              </div>
+            )}
             {msg && <p className="text-sm text-muted-foreground">{msg}</p>}
           </CardContent>
         </Card>
