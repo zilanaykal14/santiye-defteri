@@ -170,7 +170,7 @@ export function AppLayout() {
         </div>
       )}
 
-      <main className="mx-auto w-full min-w-0 max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <main className="mx-auto w-full min-w-0 max-w-[1400px] px-4 pb-40 pt-6 sm:px-6 lg:px-8 lg:py-8">
         <InstallBanner />
         <Outlet />
       </main>
@@ -179,7 +179,7 @@ export function AppLayout() {
         <Button
           variant="brand"
           size="icon"
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+20px)] right-5 z-40 size-14 rounded-full shadow-lg lg:hidden print:hidden"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+84px)] right-5 z-40 size-14 rounded-full shadow-lg lg:hidden print:hidden"
           onClick={() => openTx()}
           aria-label="Yeni işlem"
         >

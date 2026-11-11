@@ -43,7 +43,13 @@ export function SiteLogPage() {
       <>
         <PageHeader title="Şantiye Günlüğü" />
         <EmptyState icon={HardHat} title="Henüz inşaat projesi yok">
-          Önce <Link to="/insaatlar" className="text-primary underline">İnşaatlar</Link> sayfasından bir proje ekleyin.
+          {can.edit ? (
+            <>
+              Önce <Link to="/insaatlar" className="text-primary underline">İnşaatlar</Link> sayfasından bir proje ekleyin.
+            </>
+          ) : (
+            'Yönetici bir proje eklediğinde burada görünecek.'
+          )}
         </EmptyState>
       </>
     )
